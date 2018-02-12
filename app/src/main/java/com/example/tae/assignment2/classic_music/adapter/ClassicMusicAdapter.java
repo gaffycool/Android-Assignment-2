@@ -2,29 +2,22 @@ package com.example.tae.assignment2.classic_music.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.tae.assignment2.MainActivity;
 import com.example.tae.assignment2.R;
-import com.example.tae.assignment2.classic_music.controller.RealmBackupRestore;
-import com.example.tae.assignment2.classic_music.controller.RealmHelper;
 import com.example.tae.assignment2.classic_music.model.ClassicMusic;
-import com.example.tae.assignment2.classic_music.model.RealmModel.ClassicMusicModel;
 import com.example.tae.assignment2.classic_music.model.Result;
-import com.example.tae.assignment2.rock_music.adapter.RockMusicAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import io.reactivex.functions.Consumer;
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * Created by TAE on 11-Feb-18.
@@ -37,8 +30,6 @@ public class ClassicMusicAdapter extends RecyclerView.Adapter<ClassicMusicAdapte
     private List<Result> results;
     private Consumer<ClassicMusic> consumer;
     Realm realm;
-    RealmHelper realmHelper;
-    RealmBackupRestore realmBackupRestore;
 
 
     public ClassicMusicAdapter(Context applicationContext, Consumer<ClassicMusic> consumer, List<Result> results, int row) {
@@ -51,12 +42,16 @@ public class ClassicMusicAdapter extends RecyclerView.Adapter<ClassicMusicAdapte
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         initRealm();
+       // realm = Realm.getDefaultInstance();
+      //  RealmResults<>
+
+
         return new ClassicMusicAdapter.MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(row, parent, false));
     }
 
     public void initRealm() {
         realm = Realm.getDefaultInstance();
-        realmHelper = new RealmHelper((realm));
+        //realmHelper = new RealmHelper((realm));
     }
 
     @Override
@@ -72,25 +67,9 @@ public class ClassicMusicAdapter extends RecyclerView.Adapter<ClassicMusicAdapte
                 .resize(100, 100)
                 .centerCrop()
                 .into(holder.mArtwork);
-
-        //save this data to realm
-        realm = Realm.getDefaultInstance();
-        String mName = results.get(position).getTrackPrice().toString();
-        String mTrackPrice = results.get(position).getArtistName();
-        String mCollectionName = results.get(position).getCollectionName();
-        String mPreviewURL = results.get(position).getPreviewUrl();
-        String mCurrency = results.get(position).getCurrency();
-        String mArtwork = results.get(position).getArtworkUrl60();
-
-
-        ClassicMusicModel classicMusicModel = new ClassicMusicModel(
-                mName, mCollectionName, mArtwork, mPreviewURL, mCurrency, mTrackPrice);
-
-        realm.init(applicationContext);
-        realmHelper.saveClassicMusic(classicMusicModel);
-        //realmBackupRestore.backup();
-
     }
+
+
 
     @Override
     public int getItemCount() {

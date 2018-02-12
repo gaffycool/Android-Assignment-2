@@ -1,0 +1,14 @@
+com.example.tae.assignment2
+com.example.tae.assignment2.classic_music
+com.example.tae.assignment2.classic_music.adapter
+com.example.tae.assignment2.classic_music.controller
+com.example.tae.assignment2.classic_music.model
+com.example.tae.assignment2.classic_music.model.RealmModel
+com.example.tae.assignment2.pop_music
+com.example.tae.assignment2.pop_music.adapter
+com.example.tae.assignment2.pop_music.model
+com.example.tae.assignment2.rock_music
+com.example.tae.assignment2.rock_music.adapter
+com.example.tae.assignment2.rock_music.model
+com.example.tae.assignment2.service
+com.example.tae.assignment2.utils

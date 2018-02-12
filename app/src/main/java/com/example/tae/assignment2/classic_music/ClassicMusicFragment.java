@@ -1,6 +1,8 @@
 package com.example.tae.assignment2.classic_music;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,13 +13,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.tae.assignment2.MainActivity;
 import com.example.tae.assignment2.R;
 import com.example.tae.assignment2.classic_music.adapter.ClassicMusicAdapter;
 import com.example.tae.assignment2.classic_music.adapter.ClassicMusicRealmAdapter;
 import com.example.tae.assignment2.classic_music.model.ClassicMusic;
+import com.example.tae.assignment2.classic_music.model.Result;
 import com.example.tae.assignment2.service.IRequestInterface;
 import com.example.tae.assignment2.service.ServiceConnection;
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
+
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -83,6 +89,10 @@ public class ClassicMusicFragment extends Fragment {
                         }
                         else
                         {
+                            AlertNetwork();
+
+                            recyclerView.setAdapter(new ClassicMusicRealmAdapter(getActivity(), MainActivity.getRealmDatabase(), R.layout.row));
+
                             //if there is no internet connection then it will get from the realm backup
                             //get data from realm backup
                             //displayClassicMusicBackup();
@@ -90,6 +100,30 @@ public class ClassicMusicFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    public void AlertNetwork()
+    {
+        AlertDialog.Builder a_builder = new AlertDialog.Builder(getActivity());
+        a_builder.setMessage("There is no network connected.. Please make sure you are connected to the internet")
+                .setCancelable(false)
+                .setPositiveButton("Close the App", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        getActivity().finish();
+                    }
+                }).setNegativeButton("Continue using the App", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+                displayClassicMusic();
+
+            }
+        });
+
+        AlertDialog alert = a_builder.create();
+        alert.setTitle("Connection status");
+        alert.show();
     }
 
     @Override
@@ -108,8 +142,10 @@ public class ClassicMusicFragment extends Fragment {
                     @Override
                     public void accept(ClassicMusic classicMusic) throws Exception {
 
-                        recyclerView.setAdapter(new ClassicMusicAdapter(getActivity().getApplicationContext(), this, classicMusic.getResults(), R.layout.row));
+                       recyclerView.setAdapter(new ClassicMusicAdapter(getActivity().getApplicationContext(), this, classicMusic.getResults(), R.layout.row));
                         refreshLayout.setRefreshing(false);
+                        MainActivity.deleteRealmDatabase();
+                        DatabaseResults(classicMusic.getResults());
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -117,6 +153,16 @@ public class ClassicMusicFragment extends Fragment {
                         refreshLayout.setRefreshing(false);
                     }
                 });
+    }
+    private void DatabaseResults(List<Result> classicMusicResult) {
+        for (Result classicMusic : classicMusicResult) {
+            MainActivity.saveRealm(
+                    classicMusic.getCollectionName(),
+                    classicMusic.getArtistName(),
+                    classicMusic.getArtworkUrl60(),
+                    classicMusic.getTrackPrice().toString()
+            );
+        }
     }
     public void displayClassicMusicBackup()
     {

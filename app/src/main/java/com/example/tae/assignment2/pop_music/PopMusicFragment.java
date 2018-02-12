@@ -1,6 +1,8 @@
 package com.example.tae.assignment2.pop_music;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -78,12 +80,35 @@ public class PopMusicFragment extends Fragment {
                         if (isConnectedToInternet) {
                             displayPopMusic();
                         } else {
-                            Toast.makeText(getActivity(), "no network avaialable", Toast.LENGTH_LONG).show();
+                            AlertNetwork();
                         }
                     }
                 });
     }
 
+    public void AlertNetwork()
+    {
+        AlertDialog.Builder a_builder = new AlertDialog.Builder(getActivity());
+        a_builder.setMessage("There is no network connected.. Please make sure you are connected to the internet")
+                .setCancelable(false)
+                .setPositiveButton("Close the App", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        getActivity().finish();
+                    }
+                }).setNegativeButton("Continue using the App", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+                displayPopMusic();
+
+            }
+        });
+
+        AlertDialog alert = a_builder.create();
+        alert.setTitle("Connection status");
+        alert.show();
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

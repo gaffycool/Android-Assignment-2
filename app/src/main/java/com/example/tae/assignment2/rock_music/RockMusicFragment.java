@@ -1,6 +1,8 @@
 package com.example.tae.assignment2.rock_music;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.tae.assignment2.MainActivity;
 import com.example.tae.assignment2.R;
 import com.example.tae.assignment2.rock_music.adapter.RockMusicAdapter;
 import com.example.tae.assignment2.rock_music.model.RockMusic;
@@ -81,10 +84,34 @@ public class RockMusicFragment extends Fragment {
                         if (isConnectedToInternet) {
                             displayRockMusic();
                         } else {
-                            Toast.makeText(getActivity(), "no network avaialable", Toast.LENGTH_LONG).show();
+                            AlertNetwork();
                         }
                     }
                 });
+    }
+
+    public void AlertNetwork()
+    {
+        AlertDialog.Builder a_builder = new AlertDialog.Builder(getActivity());
+        a_builder.setMessage("There is no network connected.. Please make sure you are connected to the internet")
+                .setCancelable(false)
+                .setPositiveButton("Close the App", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        getActivity().finish();
+                    }
+                }).setNegativeButton("Continue using the App", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+                displayRockMusic();
+
+            }
+        });
+
+        AlertDialog alert = a_builder.create();
+        alert.setTitle("Connection status");
+        alert.show();
     }
 
     @Override

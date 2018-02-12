@@ -35,7 +35,7 @@ public class MyApp extends Application {
     {
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
-                .name("DayOutDatabase")
+                .name("MusicViewer")
                 .schemaVersion(1)
                 .deleteRealmIfMigrationNeeded()
                 .build();
