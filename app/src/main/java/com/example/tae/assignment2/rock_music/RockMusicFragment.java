@@ -12,14 +12,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.example.tae.assignment2.MainActivity;
 import com.example.tae.assignment2.R;
 import com.example.tae.assignment2.rock_music.adapter.RockMusicAdapter;
 import com.example.tae.assignment2.rock_music.model.RockMusic;
-import com.example.tae.assignment2.service.IRequestInterface;
-import com.example.tae.assignment2.service.ServiceConnection;
+import com.example.tae.assignment2.data.network.service.IRequestInterface;
+import com.example.tae.assignment2.data.network.service.ServiceConnection;
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;

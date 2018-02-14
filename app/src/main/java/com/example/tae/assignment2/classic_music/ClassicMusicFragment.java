@@ -12,15 +12,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.tae.assignment2.MainActivity;
 import com.example.tae.assignment2.R;
 import com.example.tae.assignment2.classic_music.adapter.ClassicMusicAdapter;
 import com.example.tae.assignment2.classic_music.adapter.ClassicMusicRealmAdapter;
-import com.example.tae.assignment2.classic_music.model.ClassicMusic;
-import com.example.tae.assignment2.classic_music.model.Result;
-import com.example.tae.assignment2.service.IRequestInterface;
-import com.example.tae.assignment2.service.ServiceConnection;
+import com.example.tae.assignment2.data.network.AppDataManager;
+import com.example.tae.assignment2.data.network.model.ClassicMusic;
+import com.example.tae.assignment2.data.network.model.Result;
+import com.example.tae.assignment2.data.network.service.IRequestInterface;
+import com.example.tae.assignment2.data.network.service.ServiceConnection;
+import com.example.tae.assignment2.ui.base.BaseFragment;
+import com.example.tae.assignment2.ui.base.BaseViewHolder;
+import com.example.tae.assignment2.ui.utils.rx.AppSchedulerProvider;
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 
 import java.util.List;
@@ -33,12 +38,13 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ClassicMusicFragment extends Fragment {
+public class ClassicMusicFragment extends BaseFragment implements IClassicMusicMvpView {
 
-    public IRequestInterface iRequestInterface;
+    private ClassicMusicPresenterImpl<ClassicMusicFragment> classicMusicClassicMusicPresenter;
+   // public IRequestInterface iRequestInterface;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout refreshLayout;
-    private CompositeDisposable compositeDisposable;
+   // private CompositeDisposable compositeDisposable;
     //private ClassicMusicRealmAdapter classicMusicRealmAdapter;
 
     public ClassicMusicFragment() {
@@ -57,14 +63,21 @@ public class ClassicMusicFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        iRequestInterface = ServiceConnection.getConnection();
+       // iRequestInterface = ServiceConnection.getConnection();
         recyclerView = view.findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         refreshLayout = view.findViewById(R.id.swiperefresh);
+
+
+        //initializing presenter class objects
+        classicMusicClassicMusicPresenter = new ClassicMusicPresenterImpl<>
+                (new AppDataManager(), new AppSchedulerProvider(),
+                        new CompositeDisposable());
+        classicMusicClassicMusicPresenter.onAttach(this);
+
         callService();
 
-        compositeDisposable = new CompositeDisposable();
+      //  compositeDisposable = new CompositeDisposable();
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -85,7 +98,10 @@ public class ClassicMusicFragment extends Fragment {
                         if (isConnectedToInternet)
                         {
                             //get data
-                            displayClassicMusic();
+                            //displayClassicMusic();
+                            classicMusicClassicMusicPresenter.loadMusicList();
+                            MainActivity.deleteRealmDatabase();
+                            //DatabaseResults(classicMusic.getResults());
                         }
                         else
                         {
@@ -116,7 +132,7 @@ public class ClassicMusicFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.cancel();
-                displayClassicMusic();
+                //displayClassicMusic();
 
             }
         });
@@ -129,31 +145,8 @@ public class ClassicMusicFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-    if(compositeDisposable != null && !compositeDisposable.isDisposed())
-        compositeDisposable.clear();
     }
 
-    public void displayClassicMusic()
-    {
-        iRequestInterface.getClassicMusic()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ClassicMusic>() {
-                    @Override
-                    public void accept(ClassicMusic classicMusic) throws Exception {
-
-                       recyclerView.setAdapter(new ClassicMusicAdapter(getActivity().getApplicationContext(), this, classicMusic.getResults(), R.layout.row));
-                        refreshLayout.setRefreshing(false);
-                        MainActivity.deleteRealmDatabase();
-                        DatabaseResults(classicMusic.getResults());
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        refreshLayout.setRefreshing(false);
-                    }
-                });
-    }
     private void DatabaseResults(List<Result> classicMusicResult) {
         for (Result classicMusic : classicMusicResult) {
             MainActivity.saveRealm(
@@ -164,14 +157,26 @@ public class ClassicMusicFragment extends Fragment {
             );
         }
     }
-    public void displayClassicMusicBackup()
-    {
-        //classicMusicRealmAdapter = new ClassicMusicRealmAdapter(R.layout.row,getActivity());
 
-       // refreshLayout.setRefreshing(false);
 
-      //  recyclerView.setAdapter(classicMusicRealmAdapter);
-      //  refreshLayout.setRefreshing(false);
-//
+    @Override
+    public void onFetchDataProgress() {
+
+        showLoading();
+    }
+
+    @Override
+    public void onFetchDataSuccess(ClassicMusic classicMusic) {
+
+       recyclerView.setAdapter(new ClassicMusicAdapter(getActivity(), classicMusic.getResults(), R.layout.row));
+        Toast.makeText(getActivity(), "MOVIE" + classicMusic.getResults().get(0).getArtistName(), Toast.LENGTH_LONG).show();
+
+        refreshLayout.setRefreshing(false);
+        hideLoading();
+    }
+
+    @Override
+    public void onFetchDataError(String error) {
+
     }
 }

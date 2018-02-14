@@ -16,7 +16,7 @@ import com.example.tae.assignment2.pop_music.PopMusicFragment;
 import com.example.tae.assignment2.realm_database.controller.RealmHelper;
 import com.example.tae.assignment2.realm_database.model.MusicModel;
 import com.example.tae.assignment2.rock_music.RockMusicFragment;
-import com.example.tae.assignment2.service.IRequestInterface;
+import com.example.tae.assignment2.data.network.service.IRequestInterface;
 
 import java.util.ArrayList;
 

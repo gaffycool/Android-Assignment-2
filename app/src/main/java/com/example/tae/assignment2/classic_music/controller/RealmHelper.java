@@ -1,6 +1,7 @@
 package com.example.tae.assignment2.classic_music.controller;
 
-import com.example.tae.assignment2.classic_music.model.RealmModel.ClassicMusicModel;
+
+import com.example.tae.assignment2.realm_database.model.MusicModel;
 
 import java.util.ArrayList;
 
@@ -20,7 +21,7 @@ public class RealmHelper {
         this.realm = realm;
     }
 
-    public void saveClassicMusic(final ClassicMusicModel classicMusicModel)
+    public void saveClassicMusic(final MusicModel classicMusicModel)
 
             //Async
     {
@@ -32,12 +33,12 @@ public class RealmHelper {
             });
     }
 
-    public ArrayList<ClassicMusicModel> getClassicMusic()
+    public ArrayList<MusicModel> getClassicMusic()
     {
-        ArrayList<ClassicMusicModel> classicMusicModelArrayList = new ArrayList<>();
-        RealmResults<ClassicMusicModel> realmResults = realm.where(ClassicMusicModel.class).findAll();
+        ArrayList<MusicModel> classicMusicModelArrayList = new ArrayList<>();
+        RealmResults<MusicModel> realmResults = realm.where(MusicModel.class).findAll();
 
-        for(ClassicMusicModel classicMusicModel: realmResults){
+        for(MusicModel classicMusicModel: realmResults){
             classicMusicModelArrayList.add(classicMusicModel);
         }
         return classicMusicModelArrayList;

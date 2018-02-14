@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.example.tae.assignment2.MainActivity;
 import com.example.tae.assignment2.R;
-import com.example.tae.assignment2.classic_music.model.ClassicMusic;
-import com.example.tae.assignment2.classic_music.model.Result;
+import com.example.tae.assignment2.data.network.model.ClassicMusic;
+import com.example.tae.assignment2.data.network.model.Result;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class ClassicMusicAdapter extends RecyclerView.Adapter<ClassicMusicAdapte
     Realm realm;
 
 
-    public ClassicMusicAdapter(Context applicationContext, Consumer<ClassicMusic> consumer, List<Result> results, int row) {
+    public ClassicMusicAdapter(Context applicationContext, List<Result> results, int row) {
         this.applicationContext = applicationContext;
         this.row = row;
         this.results = results;

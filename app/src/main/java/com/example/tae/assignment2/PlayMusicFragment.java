@@ -1,31 +1,22 @@
 package com.example.tae.assignment2;
 
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.media.AudioManager;
-import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.AlertDialogLayout;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tae.assignment2.R;
-import com.example.tae.assignment2.service.IRequestInterface;
-import com.example.tae.assignment2.service.ServiceConnection;
+import com.example.tae.assignment2.data.network.service.IRequestInterface;
+import com.example.tae.assignment2.data.network.service.ServiceConnection;
 import com.example.tae.assignment2.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
